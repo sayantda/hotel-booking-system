@@ -1,0 +1,39 @@
+[
+  {
+    "id": "/api/v1/users/0",
+    "first_name": "Rick",
+    "last_name": "Grimes",
+    "username": "rickgrimes",
+    "email": "rickgrimes@email.com",
+    "password": "michonne",
+    "bookings": [
+      "/api/v1/bookings/0"
+    ],
+    "bonus_points": 100
+  },
+  {
+    "id": "/api/v1/users/1",
+    "first_name": "Negan",
+    "last_name": "",
+    "username": "negan",
+    "email": "negan@email.com",
+    "password": "lucille",
+    "bookings": [
+      "/api/v1/bookings/1"
+    ],
+    "bonus_points": 100
+  },
+  {
+    "id": "/api/v1/users//api/v1/users/2",
+    "first_name": "Glenn",
+    "last_name": "Rhee",
+    "username": "glennrhee",
+    "email": "glennrhee@email.com",
+    "password": "maggie",
+    "bookings": [
+      "/api/v1/bookings/2",
+      "/api/v1/bookings/3"
+    ],
+    "bonus_points": 0
+  }
+]

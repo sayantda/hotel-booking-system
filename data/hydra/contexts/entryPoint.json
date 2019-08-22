@@ -1,0 +1,19 @@
+{
+  "@context": {
+    "hydra": "http://www.w3.org/ns/hydra/core#",
+    "vocab": "http://localhost:3000/api/v1/vocab#",
+    "EntryPoint": "vocab:EntryPoint",
+    "users": {
+      "@id": "vocab:EntryPoint/users",
+      "@type": "@id"
+    },
+    "rooms": {
+      "@id": "vocab:EntryPoint/rooms",
+      "@type": "@id"
+    },
+    "bookings": {
+      "@id": "vocab:EntryPoint/bookings",
+      "@type": "@id"
+    }
+  }
+}

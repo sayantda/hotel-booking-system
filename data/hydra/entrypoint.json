@@ -1,0 +1,8 @@
+{
+  "@context": "/api/v1/contexts/entryPoint",
+  "@id": "/api/v1",
+  "@type": "EntryPoint",
+  "users": "/api/v1/users",
+  "rooms": "/api/v1/rooms",
+  "bookings": "/api/v1/bookings"
+}

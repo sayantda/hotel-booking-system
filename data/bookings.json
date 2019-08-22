@@ -1,0 +1,58 @@
+[
+  {
+    "id": "/api/v1/bookings/0",
+    "date": "2019-08-25T12:01:04.740Z",
+    "arrival_date": "2019-08-31T12:01:04.740Z",
+    "departure_date": "2019-09-09T12:01:04.740Z",
+    "payment_method": "credit",
+    "amount": 440.02,
+    "user": "/api/v1/users/1",
+    "rooms": [
+      "/api/v1/rooms/79",
+      "/api/v1/rooms/36",
+      "/api/v1/rooms/88",
+      "/api/v1/rooms/53"
+    ],
+    "booking_status": "BOOKED"
+  },
+  {
+    "id": "/api/v1/bookings/1",
+    "date": "2019-08-23T12:01:04.741Z",
+    "arrival_date": "2019-08-26T12:01:04.741Z",
+    "departure_date": "2019-08-26T12:01:04.741Z",
+    "payment_method": "credit",
+    "amount": 492.07,
+    "user": "/api/v1/users/1",
+    "rooms": [
+      "/api/v1/rooms/44",
+      "/api/v1/rooms/41"
+    ],
+    "booking_status": "BOOKED"
+  },
+  {
+    "id": "/api/v1/bookings/2",
+    "date": "2019-08-25T12:01:04.741Z",
+    "arrival_date": "2019-08-25T12:01:04.741Z",
+    "departure_date": "2019-08-29T12:01:04.741Z",
+    "payment_method": "debit",
+    "amount": 309.5,
+    "user": "/api/v1/users/2",
+    "rooms": [
+      "/api/v1/rooms/57",
+      "/api/v1/rooms/78",
+      "/api/v1/rooms/6"
+    ],
+    "booking_status": "BOOKED"
+  },
+  {
+    "date": "2019-08-29T06:09:13.104Z",
+    "arrival_date": "2019-09-05T06:09:13.104Z",
+    "departure_date": "2019-09-05T06:09:13.104Z",
+    "payment_method": "bonus",
+    "amount": 1174.95,
+    "user": "/api/v1/users/2",
+    "rooms": [],
+    "booking_status": "PENDING APPROVAL",
+    "id": "/api/v1/bookings/3"
+  }
+]

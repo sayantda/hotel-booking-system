@@ -1,0 +1,28 @@
+{
+  "name": "hotel-booking-system",
+  "version": "1.0.0",
+  "description": "Demo Hotel Booking WebServer",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.16.3"
+  },
+  "devDependencies": {
+    "morgan": "^1.9.0",
+    "nodemon": "^1.17.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sayantda/hotel-booking-system.git"
+  },
+  "author": "Sayantan Das",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sayantda/hotel-booking-system/issues"
+  },
+  "homepage": "https://github.com/sayantda/hotel-booking-system#readme"
+}

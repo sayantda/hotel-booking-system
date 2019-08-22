@@ -1,0 +1,17 @@
+{
+  "@context": {
+    "hydra": "http://www.w3.org/ns/hydra/core#",
+    "vocab": "http://localhost:3000/api/v1/vocab#",
+    "User": "vocab:User",
+    "first_name": "vocab:User/firstName",
+    "last_name": "vocab:User/lastName",
+    "username": "vocab:User/username",
+    "email": "vocab:User/email",
+    "password": "vocab:User/password",
+    "bookings": {
+      "@id": "vocab:User/bookings",
+      "@type": "@id"
+    },
+    "bonus_points": "vocab:User/bonus_points"
+  }
+}
