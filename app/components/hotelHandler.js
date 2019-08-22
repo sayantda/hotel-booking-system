@@ -80,7 +80,8 @@ function HotelHandler () {
    */
   let createRoom = function (room, cb) {
     dbcRooms.create(room, (roomEntity) => {
-      cb()
+      if (roomEntity) cb(roomEntity)
+      else cb()
     })
   }
 
