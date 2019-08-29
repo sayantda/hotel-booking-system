@@ -24,16 +24,6 @@ module.exports = (dbName) => {
   }
 
   /**
-   * This method checks whether the provided id is a valid datapoint in the collection's dataset. Returns true or false
-   * @param id
-   * @returns {boolean}
-   * @private
-   */
-  function _isInvalid (id) {
-    return id < 0 || id >= db.length || (Object.keys(db[id]).length === 0 && db[id].constructor === Object)
-  }
-
-  /**
    * This method is used to return all records for a given collection
    * @returns {*}
    */
@@ -50,7 +40,8 @@ module.exports = (dbName) => {
    */
   let find = function (id) {
     return new Promise((resolve, resject) => {
-      let data = _isInvalid(id) ? null : db[id]
+      let idVal = id.split('/')[4]
+      let data = db[idVal]
       return resolve(data)
     })
   }
@@ -74,7 +65,7 @@ module.exports = (dbName) => {
    * @param cb
    */
   let update = function (entity, cb) {
-    let id = entity.id
+    let id = entity.id.split('/')[4]
     if (id < 0 || id >= db.length) {
       cb()
     } else {
@@ -92,10 +83,8 @@ module.exports = (dbName) => {
    */
   let remove = function (id) {
     return new Promise((resolve, reject) => {
-      if (_isInvalid(id)) {
-        return reject()
-      }
-      db[id] = {}
+      let idVal = id.split('/')[4]
+      db[idVal] = {}
       return resolve()
     })
   }

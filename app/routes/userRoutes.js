@@ -24,7 +24,7 @@ function UserRoutes () {
         json['username'] = entry.username
         json['email'] = entry.email
         json['password'] = entry.password
-        json['bookings'] = req.originalUrl + '/bookings'
+        json['bookings'] = req.originalUrl + 'bookings'
         json['bonus_points'] = entry.bonus_points
         res.send(json)
       } else {

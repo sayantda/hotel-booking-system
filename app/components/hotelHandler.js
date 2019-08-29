@@ -62,10 +62,8 @@ function HotelHandler () {
    * @param cb
    */
   let addRoom = function (bookingId, roomId, cb) {
-    dbcBookings.find(bookingId).then(result => {
-      let booking = result[0]
-      dbcRooms.find(roomId).then(roomResult => {
-        let room = roomResult[0]
+    dbcBookings.find(bookingId).then(booking => {
+      dbcRooms.find(roomId).then(room => {
         if (booking && room) {
           booking.rooms.push(room.id)
           dbcBookings.update(booking, (bookingEntity) => {
@@ -85,10 +83,8 @@ function HotelHandler () {
    * @param cb
    */
   let removeRoom = function (bookingId, roomId, cb) {
-    dbcBookings.find(bookingId).then((result) => {
-      let booking = result[0]
-      dbcRooms.find(roomId).then(roomResult => {
-        let room = roomResult[0]
+    dbcBookings.find(bookingId).then((booking) => {
+      dbcRooms.find(roomId).then(room => {
         if (booking && room) {
           let roomIndex = booking.rooms.indexOf(room.id)
           if (roomIndex >= 0) {

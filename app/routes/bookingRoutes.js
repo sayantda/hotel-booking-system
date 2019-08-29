@@ -48,49 +48,50 @@ function BookingRoutes () {
     })
   })
 
-  bookings.put('/:id', (req, res, next) => {
-    req.body['id'] = req.params.id
-
-    handler.updateBooking(req.body, (entity) => {
-      if (entity) res.status(200).send(entity)
-      else res.status(500).json('Booking could not be updated! Please try again later.')
-      next()
-    })
-  })
-
-  bookings.post('/:id/rooms', (req, res, next) => {
-    handler.addRoom(req.params.id, req.body.room, (entity) => {
-      if (entity) res.status(200).send(entity)
-      else res.status(500).json('Room could not be added! Please try again later.')
-      next()
-    })
-  })
-
   bookings.post('/', (req, res, next) => {
     dbc.all().then((data) => {
-      let bookedRooms = []
+      let bookedRoomIndex = []
       let bookedRoomsStatus = {}
       data.forEach(function (booking) {
-        booking.rooms.forEach(function (room) {
-          bookedRooms.push(room)
-          bookedRoomsStatus[room] = booking
-        })
-      })
-
-      function generateRandomRoom (originalUrl, bonus) {
-        let num = Math.floor(Math.random() * 10)
-        let roomNum = ''
-        if (bookedRooms.length === 10) {
-          bookedRooms.forEach(room => {
-            if (bookedRoomsStatus[room].booking_status === 'PENDING APPROVAL' && !!bonus && (bonus >= bookedRoomsStatus[room].amount)) {
-              roomNum = room
-              return
+        if (booking.rooms) {
+          booking.rooms.forEach(function (room) {
+            if (room) {
+              bookedRoomIndex.push(room.split('/')[4])
+              bookedRoomsStatus[room] = booking
             }
           })
-          return roomNum
+        }
+      })
+
+      function getAvailableRoom(bonus) {
+        if (bookedRoomIndex.length === 10) {
+            for (let i in bookedRoomsStatus) {
+              if (bookedRoomsStatus[i].booking_status === 'PENDING APPROVAL' && ((!!bonus && bonus >= req.body.amount) || !bonus)) {
+                return i
+              }
+            }
+          return
         } else {
-          roomNum = originalUrl.replace('bookings', 'rooms') + (originalUrl.endsWith('/') ? '' : '/') + num
-          return (bookedRooms.includes(roomNum)) ? generateRandomRoom(originalUrl) : roomNum
+          for (let i = 0; i < 10; i++) {
+            if (bookedRoomIndex.indexOf(i.toString()) === -1) {
+              return config.ns + '/rooms/' + i
+            }
+          }
+        }
+      }
+
+      function updatePendingBooking(room) {
+        let userBookingTobeDeleted = bookedRoomsStatus[room]
+        if (userBookingTobeDeleted) {
+          if (userBookingTobeDeleted.rooms.length > 1) {
+            let index = userBookingTobeDeleted.rooms.indexOf(room);
+            if (index !== -1) userBookingTobeDeleted.rooms.splice(index, 1);
+            dbc.update(userBookingTobeDeleted, function () {
+              console.log('Booking successfully updated by removing Pending Approval')
+            })
+          } else {
+            dbc.remove(userBookingTobeDeleted.id).then(() => {console.log('Booking successfully removed for Pending Approval')})
+          }
         }
       }
 
@@ -105,40 +106,36 @@ function BookingRoutes () {
         req.body['rooms'] = []
         req.body['booking_status'] = ''
         if (req.body && req.body.payment_method && req.body.payment_method === 'bonus') {
-          if (bookedRooms.length === 10) {
-            let room = generateRandomRoom(req.originalUrl, entry.bonus_points)
+          if (bookedRoomIndex.length === 10) {
+            let room = getAvailableRoom(entry.bonus_points)
             if (!room) {
               return res.status(500).json('Booking could not be created! Rooms are unavailable!')
             } else {
               req.body['rooms'].push(room)
-              let userBookingTobeDeleted = bookedRoomsStatus[room]
-              if (userBookingTobeDeleted) {
-                if (userBookingTobeDeleted.rooms.length > 1) {
-                  let index = userBookingTobeDeleted.rooms.indexOf(room);
-                  if (index !== -1) userBookingTobeDeleted.rooms.splice(index, 1);
-                  dbc.update(userBookingTobeDeleted, function () {
-                    console.log('Booking successfully updated by removing Pending Approval')
-                  })
-                } else {
-                  dbc.remove(userBookingTobeDeleted.id).then(() => {console.log('Booking successfully removed for Pending Approval')})
-                }
-              }
+              updatePendingBooking(room)
             }
           }
           if (entry.bonus_points < req.body.amount) {
             req.body['booking_status'] = 'PENDING APPROVAL'
+            let room = getAvailableRoom()
+            if (!room) return res.status(500).json('Booking could not be created! Rooms are unavailable!')
+            req.body['rooms'].push(room)
           } else {
             req.body['booking_status'] = 'BOOKED'
             entry.bonus_points = (entry.bonus_points - req.body.amount).toFixed(2)
-            if (bookedRooms.length < 10) {
-              let room = generateRandomRoom(req.originalUrl)
+            if (bookedRoomIndex.length < 10) {
+              let room = getAvailableRoom()
               req.body['rooms'].push(room)
             }
           }
         } else {
-          let room = generateRandomRoom(req.originalUrl)
+          let room = getAvailableRoom()
+          if (!room) return res.status(500).json('Booking could not be created! Rooms are unavailable!')
           req.body['rooms'].push(room)
           req.body['booking_status'] = 'BOOKED'
+          if (bookedRoomIndex.length === 10) {
+            updatePendingBooking(room)
+          }
         }
         req.body.user = config.ns + '/users/' + req.body.user
         dbc.create(req.body, (entity) => {
@@ -162,7 +159,8 @@ function BookingRoutes () {
     if (!req.body.room) {
       return res.status(500).json('Room id was not provided in body!')
     }
-    handler.removeRoom(req.params.id, req.body.room, (entity) => {
+    let idVal = config.ns + '/bookings/' + req.params.id
+    handler.removeRoom(idVal, req.body.room, (entity) => {
       if (entity) res.status(200).send(entity)
       else res.status(500).json('Room could not be removed! Please try again later.')
       next()
@@ -170,7 +168,8 @@ function BookingRoutes () {
   })
 
   bookings.delete('/:id', (req, res, next) => {
-    dbc.remove(req.params.id).then(() => {
+    let idVal = config.ns + '/bookings/' + req.params.id
+    dbc.remove(idVal).then(() => {
       res.status(200).json('OK')
       next()
     }).catch(err => {
