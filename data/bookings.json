@@ -8,10 +8,10 @@
     "amount": 440.02,
     "user": "/api/v1/users/1",
     "rooms": [
-      "/api/v1/rooms/79",
-      "/api/v1/rooms/36",
-      "/api/v1/rooms/88",
-      "/api/v1/rooms/53"
+      "/api/v1/rooms/1",
+      "/api/v1/rooms/2",
+      "/api/v1/rooms/3",
+      "/api/v1/rooms/4"
     ],
     "booking_status": "BOOKED"
   },
@@ -24,8 +24,8 @@
     "amount": 492.07,
     "user": "/api/v1/users/1",
     "rooms": [
-      "/api/v1/rooms/44",
-      "/api/v1/rooms/41"
+      "/api/v1/rooms/5",
+      "/api/v1/rooms/6"
     ],
     "booking_status": "BOOKED"
   },
@@ -38,21 +38,10 @@
     "amount": 309.5,
     "user": "/api/v1/users/2",
     "rooms": [
-      "/api/v1/rooms/57",
-      "/api/v1/rooms/78",
-      "/api/v1/rooms/6"
+      "/api/v1/rooms/7",
+      "/api/v1/rooms/8",
+      "/api/v1/rooms/9"
     ],
     "booking_status": "BOOKED"
-  },
-  {
-    "date": "2019-08-29T06:09:13.104Z",
-    "arrival_date": "2019-09-05T06:09:13.104Z",
-    "departure_date": "2019-09-05T06:09:13.104Z",
-    "payment_method": "bonus",
-    "amount": 1174.95,
-    "user": "/api/v1/users/2",
-    "rooms": [],
-    "booking_status": "PENDING APPROVAL",
-    "id": "/api/v1/bookings/3"
   }
 ]

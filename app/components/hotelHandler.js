@@ -16,10 +16,29 @@ function HotelHandler () {
    * @param cb
    */
   let updateUser = function (user, cb) {
-    let oldUser = dbcUsers.find(user.id)
-    delete user.bookings
-    let newUser = {...oldUser, ...user}
-    dbcUsers.update(newUser, cb)
+    let idVal = config.ns + '/users/' + user.id
+    dbcUsers.find(idVal).then(oldUser => {
+      delete user.bookings
+      let newUser = {...oldUser, ...user}
+      if (user.hasOwnProperty('bonus_points')) {
+        newUser.bonus_points = oldUser.bonus_points + user.bonus_points
+        dbcBookings.all({user: idVal}).then(bookings => {
+          bookings.forEach(booking => {
+            if (booking.booking_status === 'PENDING APPROVAL') {
+              if (newUser.bonus_points > booking.amount) {
+                newUser.bonus_points = (newUser.bonus_points - booking.amount).toFixed(2)
+                booking.booking_status = 'BOOKED'
+                dbcBookings.update({id: booking.id, booking_status: booking.booking_status}, function () {
+                  console.log('Booking updated')
+                })
+              }
+            }
+          })
+          newUser.id = idVal
+          dbcUsers.update(newUser, cb)
+        })
+      }
+    })
   }
 
   /**
@@ -28,10 +47,12 @@ function HotelHandler () {
    * @param cb
    */
   let updateBooking = function (booking, cb) {
-    let oldBooking = dbcBookings.find(booking.id)
-    booking.user = config.ns + '/users/' + booking.user
-    booking['rooms'] = oldBooking.rooms
-    dbcBookings.update(booking, cb)
+    dbcBookings.find(booking.id).then(result => {
+      let oldBooking = result[0]
+      booking.user = config.ns + '/users/' + booking.user
+      booking['rooms'] = oldBooking.rooms
+      dbcBookings.update(booking, cb)
+    })
   }
 
   /**
@@ -41,15 +62,20 @@ function HotelHandler () {
    * @param cb
    */
   let addRoom = function (bookingId, roomId, cb) {
-    let booking = dbcBookings.find(bookingId)
-    let room = dbcRooms.find(roomId)
-    if (booking && room) {
-      booking.rooms.push(room.id)
-      dbcBookings.update(booking, (bookingEntity) => {
-        if (bookingEntity) cb(bookingEntity)
-        else cb()
+    dbcBookings.find(bookingId).then(result => {
+      let booking = result[0]
+      dbcRooms.find(roomId).then(roomResult => {
+        let room = roomResult[0]
+        if (booking && room) {
+          booking.rooms.push(room.id)
+          dbcBookings.update(booking, (bookingEntity) => {
+            if (bookingEntity) cb(bookingEntity)
+            else cb()
+          })
+        } else cb()
       })
-    } else cb()
+    })
+
   }
 
   /**
@@ -59,18 +85,22 @@ function HotelHandler () {
    * @param cb
    */
   let removeRoom = function (bookingId, roomId, cb) {
-    let booking = dbcBookings.find(bookingId)
-    let room = dbcRooms.find(roomId)
-    if (booking && room) {
-      let roomIndex = booking.rooms.indexOf(room.id)
-      if (roomIndex >= 0) {
-        booking.rooms.splice(roomIndex, 1)
-        dbcBookings.update(booking, (bookingEntity) => {
-          if (bookingEntity) cb(bookingEntity)
-          else cb()
-        })
-      } else cb()
-    } else cb()
+    dbcBookings.find(bookingId).then((result) => {
+      let booking = result[0]
+      dbcRooms.find(roomId).then(roomResult => {
+        let room = roomResult[0]
+        if (booking && room) {
+          let roomIndex = booking.rooms.indexOf(room.id)
+          if (roomIndex >= 0) {
+            booking.rooms.splice(roomIndex, 1)
+            dbcBookings.update(booking, (bookingEntity) => {
+              if (bookingEntity) cb(bookingEntity)
+              else cb()
+            })
+          } else cb()
+        } else cb()
+      })
+    })
   }
 
   /**
@@ -92,12 +122,13 @@ function HotelHandler () {
    * @returns {*}
    */
   let deleteRoom = function (roomId, cb) {
-    let room = dbcRooms.find(roomId)
-    if (!room) {
-      return cb()
-    }
-    dbcRooms.remove(roomId)
-    cb(roomId)
+    dbcRooms.find(roomId).then((result) => {
+      let room = result[0]
+      if (!room) {
+        return cb()
+      }
+      dbcRooms.remove(roomId).then(() => {cb(roomId)})
+    })
   }
 
   return {

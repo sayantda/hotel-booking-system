@@ -3,6 +3,7 @@
 const router = require('../components/router')
 const jsonld = require('../components/factory')
 const handler = require('../components/hotelHandler')
+const config = require('../../config')
 
 /**
  * This is the room specfic routes. It supports get, post, put, and delete operations on various endpoints
@@ -14,31 +15,31 @@ function RoomRoutes () {
   let rooms = router(dbc)
 
   rooms.get('/:id', (req, res, next) => {
-    let entry = dbc.find(req.params.id)
+    let idVal = config.ns + '/rooms/' + req.params.id
+    dbc.find(idVal).then(entry => {
+      if (entry) {
+        let json = jsonld.createResource(req.originalUrl, 'Room')
+        json['room_no'] = entry.room_no
+        json['description'] = entry.description
+        json['category'] = entry.category
+        json['size'] = entry.size
+        json['capacity'] = entry.capacity
+        json['price'] = entry.price
+        json['hotel'] = entry.hotel
 
-    if (entry) {
-      let json = jsonld.createResource(req.originalUrl, 'Room')
-      json['room_no'] = entry.room_no
-      json['description'] = entry.description
-      json['category'] = entry.category
-      json['size'] = entry.size
-      json['capacity'] = entry.capacity
-      json['price'] = entry.price
-      json['hotel'] = entry.hotel
+        res.send(json)
+      } else {
+        res.status(404).json('Not Found')
+      }
 
-      res.send(json)
-    } else {
-      res.status(404).json('Not Found')
-    }
-
-    next()
+      next()
+    })
   })
 
   rooms.post('/', (req, res, next) => {
     handler.createRoom(req.body, (entity) => {
       if (entity) res.status(201).send(entity)
       else res.status(500).json('Room not created successfully')
-
       next()
     })
   })

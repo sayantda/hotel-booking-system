@@ -24,15 +24,14 @@
     "bonus_points": 100
   },
   {
-    "id": "/api/v1/users//api/v1/users/2",
+    "id": "/api/v1/users/2",
     "first_name": "Glenn",
     "last_name": "Rhee",
     "username": "glennrhee",
     "email": "glennrhee@email.com",
     "password": "maggie",
     "bookings": [
-      "/api/v1/bookings/2",
-      "/api/v1/bookings/3"
+      "/api/v1/bookings/2"
     ],
     "bonus_points": 0
   }

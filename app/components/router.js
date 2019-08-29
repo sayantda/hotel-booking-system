@@ -26,12 +26,21 @@ module.exports = dbc => {
   }
 
   router.get('/', (req, res, next) => {
-    res.send(jsonld.createCollection(
-      req.originalUrl,
-      _getType(req.baseUrl),
-      dbc.all()
-    ))
-    next()
+    function send (data) {
+      if (data) {
+        res.send(jsonld.createCollection(
+          req.originalUrl,
+          _getType(req.baseUrl),
+          data
+        ))
+        next()
+      }
+    }
+
+    dbc.all().then((data) => {
+      send(data)
+    })
+
   })
 
   return router

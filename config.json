@@ -1,4 +1,9 @@
 {
     "host": "http://localhost:3000",
-    "ns": "/api/v1"
+    "ns": "/api/v1",
+    "mongo": {
+        "host": "localhost",
+        "port": 27017
+    },
+    "useMongo": true
 }
