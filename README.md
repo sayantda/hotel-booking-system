@@ -154,45 +154,46 @@ Please find below list of operations supported by the three resources (User, Roo
     - 10 rooms.
 
     1st user has the following attributes:
-        ```javascript
-            {
-                "id": "/api/v1/users/1",
-                "first_name": "Negan",
-                "last_name": "",
-                "username": "negan",
-                "email": "negan@email.com",
-                "password": "lucille",
-                "bookings": [
-                    "/api/v1/bookings/1"
-                ],
-                "bonus_points": 600.50
-            }
-        ```
+    ```javascript
+        {
+            "id": "/api/v1/users/1",
+            "first_name": "Negan",
+            "last_name": "",
+            "username": "negan",
+            "email": "negan@email.com",
+            "password": "lucille",
+            "bookings": [
+                "/api/v1/bookings/1"
+            ],
+            "bonus_points": 600.50
+        }
+    ```
 
     Now if we attempt to create a booking for user 1 with the following attributes, room amount exceeding available bonus points:
-        ```javascript
-            {
-                "date": "2019-08-25T12:01:04.740Z",
-                "arrival_date": "2019-08-31T12:01:04.740Z",
-                "departure_date": "2019-09-09T12:01:04.740Z",
-                "payment_method": "bonus",
-                "amount": 1000.02,
-                "user": "1"
-            }
-        ```
-    This changes the booking_status of the newly created booking to PENDING APPROVAL.
+    ```javascript
+        {
+            "date": "2019-08-25T12:01:04.740Z",
+            "arrival_date": "2019-08-31T12:01:04.740Z",
+            "departure_date": "2019-09-09T12:01:04.740Z",
+            "payment_method": "bonus",
+            "amount": 1000.02,
+            "user": "1"
+        }
+    ```
+    This changes the booking_status of the newly created booking to 'PENDING APPROVAL'.
 
-    Let's assume another user (2) tries to create a booking, in this scenario if user has proper payment method and credit available the booking with PENDING APPROVAL gets deleted and the booking for user 2 gets created.
-        ```javascript
-            {
-                "date": "2019-08-25T12:01:04.740Z",
-                "arrival_date": "2019-08-31T12:01:04.740Z",
-                "departure_date": "2019-09-09T12:01:04.740Z",
-                "payment_method": "cash",
-                "amount": 1000.02,
-                "user": "2"
-            }
+    Let's assume another user (2) tries to create a booking, in this scenario if user has proper payment method and credit available the booking with 'PENDING APPROVAL' gets deleted and the booking for user 2 gets created with status 'BOOKED'. If payment method is not valid, error message .gets displayed stating that rooms are unavailable.
+    ```javascript
+        {
+            "date": "2019-08-25T12:01:04.740Z",
+            "arrival_date": "2019-08-31T12:01:04.740Z",
+            "departure_date": "2019-09-09T12:01:04.740Z",
+            "payment_method": "cash",
+            "amount": 1000.02,
+            "user": "2"
+        }
+    ```
 
-    In case all valid bookings are present all new bookings will not be accepted, and proper error message gets displayed to the user.
+    In case all bookings are present in 'BOOKED' state, all new bookings will not be accepted, and proper error message gets displayed to the user.
 
 **Happy Coding!**
