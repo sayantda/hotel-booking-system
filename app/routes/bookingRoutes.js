@@ -39,11 +39,15 @@ function BookingRoutes () {
   bookings.get('/:id/rooms', (req, res, next) => {
     let idVal = config.ns + '/bookings/' + req.params.id
     dbc.find(idVal).then(entry => {
-      res.send(jsonld.createCollection(
-        req.originalUrl,
-        'Room',
-        entry.rooms
-      ))
+      if (entry && Object.keys(entry).length > 0) {
+        res.send(jsonld.createCollection(
+          req.originalUrl,
+          'Room',
+          entry.rooms
+        ))
+      } else {
+        res.status(404).json('No rooms present with this booking')
+      }
       next()
     })
   })

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const config = require('./../../config')
 
-mongoose.connect('mongodb://' + config.mongo.host + '/hotel')
+mongoose.connect('mongodb://' + config.mongo.host + '/hotel', { useNewUrlParser: true })
 
 const User = mongoose.model('User', {
   id: String,

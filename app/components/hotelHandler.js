@@ -25,7 +25,7 @@ function HotelHandler () {
         dbcBookings.all({user: idVal}).then(bookings => {
           bookings.forEach(booking => {
             if (booking.booking_status === 'PENDING APPROVAL') {
-              if (newUser.bonus_points > booking.amount) {
+              if (newUser.bonus_points >= booking.amount) {
                 newUser.bonus_points = (newUser.bonus_points - booking.amount).toFixed(2)
                 booking.booking_status = 'BOOKED'
                 dbcBookings.update({id: booking.id, booking_status: booking.booking_status}, function () {
