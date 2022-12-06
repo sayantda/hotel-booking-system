@@ -4,7 +4,7 @@
   "description": "Demo Hotel Booking WebServer",
   "main": "app.js",
   "dependencies": {
-    "express": "^4.16.3",
+    "express": "^4.18.2",
     "mongoose": "^5.6.11"
   },
   "devDependencies": {
